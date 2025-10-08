@@ -5,11 +5,9 @@ import connectDb from './configs/db.js'
 dotenv.config()
 const app = express()
 const port = 3000
-await connectDb()
-
 app.use(express.json())
 app.use(cors())
-
+connectDb()
 app.get('/', (req, res) => {
   res.send('server is live')
 })
