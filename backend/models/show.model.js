@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 const showSchema = new mongoose.Schema(
   {
     movie: { type: String, required: true, ref: 'Movie' },
-    showDatetime: { type: Date, required: true },
+    showDateTime: { type: Date, required: true },
     showPrice: { type: Number, required: true },
     occupiedSeats: { type: Object, default: {} },
   },
