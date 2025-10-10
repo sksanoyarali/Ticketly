@@ -62,3 +62,24 @@ const createBooking = async (req, res) => {
     })
   }
 }
+const getOccupiedSeats = async (req, res) => {
+  try {
+    const { showId } = req.params
+
+    const showData = await Show.findById(showId)
+    const occupiedSeats = Object.keys(showData.occupiedSeats)
+
+    res.status(200).json({
+      success: true,
+      message: error.message,
+      occupiedSeats,
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+}
+export { createBooking, getOccupiedSeats }
