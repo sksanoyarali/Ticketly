@@ -8,6 +8,7 @@ import connectDb from './configs/db.js'
 import showRouter from './routes/show.routes.js'
 import bookingRouter from './routes/booking.routes.js'
 import adminRouter from './routes/admin.routes.js'
+import userRouter from './routes/user.routes.js'
 dotenv.config()
 const app = express()
 const port = 3000
@@ -28,6 +29,8 @@ app.use('/api/show', showRouter)
 app.use('/api/booking', bookingRouter)
 
 app.use('/api/admin', adminRouter)
+
+app.use('/api/user', userRouter)
 
 app.listen(port, () => {
   console.log(`Server is listening at port ${port}`)
