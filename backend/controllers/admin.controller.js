@@ -83,4 +83,4 @@ const getAllbookings = async (req, res) => {
   }
 }
 
-export { isAdmin, getDashBoardData, getAllShows }
+export { isAdmin, getDashBoardData, getAllShows, getAllbookings }
