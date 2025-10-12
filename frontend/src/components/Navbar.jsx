@@ -1,11 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
-import { MenuIcon, SearchIcon, XIcon } from 'lucide-react'
+import { MenuIcon, SearchIcon, TicketPlus, XIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useClerk, UserButton, useUser } from '@clerk/clerk-react'
 
 const Navbar = () => {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useUser()
   const { openSignIn } = useClerk()
@@ -33,7 +34,8 @@ const Navbar = () => {
         />
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false)
+            scrollTo(0, 0)
+            setIsOpen(false)
           }}
           to={'/'}
         >
@@ -41,7 +43,8 @@ const Navbar = () => {
         </Link>
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false)
+            scrollTo(0, 0)
+            setIsOpen(false)
           }}
           to={'/movies'}
         >
@@ -49,7 +52,8 @@ const Navbar = () => {
         </Link>
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false)
+            scrollTo(0, 0)
+            setIsOpen(false)
           }}
           to={'/'}
         >
@@ -83,7 +87,15 @@ const Navbar = () => {
             Login
           </button>
         ) : (
-          <UserButton />
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="My Bookings"
+                labelIcon={<TicketPlus width={15} />}
+                onClick={() => navigate('/my-bookings')}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
         )}
       </div>
       <MenuIcon
