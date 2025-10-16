@@ -18,3 +18,10 @@ body {
 .no-scrollbar {
   scrollbar-width: none;
 }
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
