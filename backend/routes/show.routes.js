@@ -9,7 +9,7 @@ import { protectAdmin } from '../middlewares/auth.middleware.js'
 
 const showRouter = express.Router()
 
-showRouter.get('/nowplaying', protectAdmin, getNowPlayingMovies)
+showRouter.get('/now-playing', protectAdmin, getNowPlayingMovies)
 
 showRouter.post('/add', protectAdmin, addShow)
 
