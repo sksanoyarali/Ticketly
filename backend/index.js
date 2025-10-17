@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+dotenv.config()
 import { clerkMiddleware } from '@clerk/express'
 import { serve } from 'inngest/express'
 import { inngest, functions } from './inngest/index.js'
@@ -9,7 +10,9 @@ import showRouter from './routes/show.routes.js'
 import bookingRouter from './routes/booking.routes.js'
 import adminRouter from './routes/admin.routes.js'
 import userRouter from './routes/user.routes.js'
-dotenv.config()
+import { makeAdmin } from './test/makeAdmin.js'
+import 'dotenv/config' // Add this line at the very top
+import { clerkClient } from '@clerk/clerk-sdk-node'
 const app = express()
 const port = 3000
 connectDb()
@@ -31,7 +34,7 @@ app.use('/api/booking', bookingRouter)
 app.use('/api/admin', adminRouter)
 
 app.use('/api/user', userRouter)
-
+app.patch('/api/v1/make-admin/:userId', makeAdmin)
 app.listen(port, () => {
   console.log(`Server is listening at port ${port}`)
 })
