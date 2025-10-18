@@ -4,6 +4,7 @@ import { assets } from '../assets/assets'
 import { MenuIcon, SearchIcon, TicketPlus, XIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useClerk, UserButton, useUser } from '@clerk/clerk-react'
+import { useAppContext } from '../context/AppContext'
 
 const Navbar = () => {
   const navigate = useNavigate()
@@ -11,6 +12,7 @@ const Navbar = () => {
   const { user } = useUser()
   const { openSignIn } = useClerk()
 
+  const { favoritesMovies } = useAppContext()
   return (
     <div
       className="fixed top-0 left-0 z-50 w-full flex items-center
@@ -67,14 +69,16 @@ const Navbar = () => {
         >
           Releases
         </Link>
-        <Link
-          onClick={() => {
-            scrollTo(0, 0), setIsOpen(false)
-          }}
-          to={'/favorites'}
-        >
-          Favorites
-        </Link>
+        {favoritesMovies.length > 0 && (
+          <Link
+            onClick={() => {
+              scrollTo(0, 0), setIsOpen(false)
+            }}
+            to={'/favorites'}
+          >
+            Favorites
+          </Link>
+        )}
       </div>
       <div className="flex items-center gap-8">
         <SearchIcon className="max-md:hidden w-6 h-6 cursor-pointer" />

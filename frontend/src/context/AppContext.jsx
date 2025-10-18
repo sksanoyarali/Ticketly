@@ -60,7 +60,9 @@ export const AppProvider = ({ children }) => {
       } else {
         toast.error(data.message)
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
