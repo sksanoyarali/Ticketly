@@ -17,7 +17,7 @@ const getDashBoardData = async (req, res) => {
 
     const totalUser = await User.countDocuments()
 
-    const dashBoardData = {
+    const dashboardData = {
       totalBookings: bookings.length,
       totalRevenue: bookings.reduce((acc, booking) => acc + booking.amount, 0),
       activeShows,
@@ -26,7 +26,7 @@ const getDashBoardData = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      dashBoardData,
+      dashboardData,
     })
   } catch (error) {
     console.error(error)
