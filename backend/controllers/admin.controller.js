@@ -43,7 +43,7 @@ const getAllShows = async (req, res) => {
   try {
     const shows = await Show.find({ showDateTime: { $gte: new Date() } })
       .populate('movie')
-      .sort({ showDateTime: true })
+      .sort({ showDateTime: 1 })
 
     return res.status(200).json({
       success: true,
