@@ -3,8 +3,11 @@ import { dummyShowsData } from '../../assets/assets'
 import Loading from '../../components/Loading'
 import Title from '../../components/admin/Title'
 import { dateFormat } from '../../lib/dateFormat'
+import { useAppContext } from '../../context/AppContext'
+import toast from 'react-hot-toast'
 
 const ListShows = () => {
+  const { axios, getToken, user } = useAppContext()
   const currency = import.meta.env.VITE_CURRENCY
 
   const [shows, setShows] = useState([])
@@ -12,26 +15,27 @@ const ListShows = () => {
 
   const getAllShows = async () => {
     try {
-      setShows([
-        {
-          movie: dummyShowsData[0],
-          showDateTime: '2025-06-30T02:30:00.000Z',
-          showPrice: 59,
-          occupiedseats: {
-            A1: 'user_1',
-            B1: 'user_2',
-            C1: 'user_#',
-          },
+      const { data } = await axios.get('/api/admin/all-shows', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
         },
-      ])
+      })
+      if (data.success) {
+        setShows(data.shows)
+      } else {
+        toast.error(data.message)
+      }
       setLoading(false)
     } catch (error) {
+      toast.error('Error in fetching list shows')
       console.log(error)
     }
   }
   useEffect(() => {
-    getAllShows()
-  }, [])
+    if (user) {
+      getAllShows()
+    }
+  }, [user])
   return !loading ? (
     <>
       <Title text1="List" text2="Shows" />
@@ -54,11 +58,11 @@ const ListShows = () => {
                 <td className="p-2 min-w-45 pl-5">{show.movie.title}</td>
                 <td className="p-2">{dateFormat(show.showDateTime)}</td>
                 <td className="p-2">
-                  {Object.keys(show.occupiedseats).length}
+                  {Object.keys(show.occupiedSeats).length}
                 </td>
                 <td className="p-2">
                   {currency}
-                  {Object.keys(show.occupiedseats).length * show.showPrice}
+                  {Object.keys(show.occupiedSeats).length * show.showPrice}
                 </td>
               </tr>
             ))}
