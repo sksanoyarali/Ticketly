@@ -12,9 +12,17 @@ import adminRouter from './routes/admin.routes.js'
 import userRouter from './routes/user.routes.js'
 import 'dotenv/config' // Add this line at the very top
 import { clerkClient } from '@clerk/clerk-sdk-node'
+import { stripeWebhooks } from './controllers/stripeWebHooks.js'
 const app = express()
 const port = 3000
 connectDb()
+
+// stripe Webhooks Route
+app.use(
+  '/api/stripe',
+  express.raw({ type: 'application/json' }),
+  stripeWebhooks
+)
 //middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
