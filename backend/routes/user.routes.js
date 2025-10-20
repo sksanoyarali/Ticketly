@@ -7,7 +7,7 @@ import {
 
 const userRouter = express.Router()
 
-userRouter.post('/bookings', getUserBookings)
+userRouter.get('/bookings', getUserBookings)
 
 userRouter.post('/update-favorite', updateFavorite)
 
