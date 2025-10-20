@@ -25,9 +25,18 @@ const checkSeatsAvailability = async (showId, selectedSeats) => {
 const createBooking = async (req, res) => {
   try {
     const { userId } = req.auth()
+    console.log(userId)
+
     const { showId, selectedSeats } = req.body
+
     const { origin } = req.headers
+    console.log('show', showId)
+    console.log('selectedSeats', selectedSeats)
+    console.log('origin', origin)
+
     const isAvailable = await checkSeatsAvailability(showId, selectedSeats)
+    console.log(isAvailable)
+
     if (!isAvailable) {
       return res.status(400).json({
         success: false,

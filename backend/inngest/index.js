@@ -1,8 +1,12 @@
 import { Inngest } from 'inngest'
+import 'dotenv/config'
 import User from '../models/user.model.js'
 import Booking from '../models/booking.model.js'
 import Show from '../models/show.model.js'
-export const inngest = new Inngest({ id: 'movie-ticket-booking-app' })
+export const inngest = new Inngest({
+  id: 'movie-ticket-booking-app',
+  eventKey: process.env.INNGEST_EVENT_KEY,
+})
 // inngest functions to save user data to adatbase
 const syncUserCreation = inngest.createFunction(
   { id: 'sync-user-from-clerk' },
