@@ -11,7 +11,6 @@ import bookingRouter from './routes/booking.routes.js'
 import adminRouter from './routes/admin.routes.js'
 import userRouter from './routes/user.routes.js'
 import 'dotenv/config' // Add this line at the very top
-import { clerkClient } from '@clerk/clerk-sdk-node'
 import { stripeWebhooks } from './controllers/stripeWebHooks.js'
 const app = express()
 const port = 3000
@@ -19,7 +18,7 @@ connectDb()
 
 // stripe Webhooks Route
 app.use(
-  '/api/stripe',
+  '/api/stripe/webhook',
   express.raw({ type: 'application/json' }),
   stripeWebhooks
 )
