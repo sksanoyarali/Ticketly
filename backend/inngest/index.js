@@ -6,6 +6,7 @@ import Show from '../models/show.model.js'
 export const inngest = new Inngest({
   id: 'movie-ticket-booking-app',
   eventKey: process.env.INNGEST_EVENT_KEY,
+  signingKey: process.env.INNGEST_SIGNING_KEY,
 })
 // inngest functions to save user data to adatbase
 const syncUserCreation = inngest.createFunction(
