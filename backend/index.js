@@ -17,17 +17,13 @@ const port = 3000
 connectDb()
 
 // stripe Webhooks Route
-app.use(
-  '/api/stripe/webhook',
-  express.raw({ type: 'application/json' }),
-  stripeWebhooks
-)
+app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
 //middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5174'],
     credentials: true,
   })
 )
