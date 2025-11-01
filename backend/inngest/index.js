@@ -3,6 +3,7 @@ import 'dotenv/config'
 import User from '../models/user.model.js'
 import Booking from '../models/booking.model.js'
 import Show from '../models/show.model.js'
+import sendEmail from '../configs/nodemailer.js'
 export const inngest = new Inngest({
   id: 'movie-ticket-booking-app',
   eventKey: process.env.INNGEST_EVENT_KEY,
@@ -73,9 +74,66 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
     })
   }
 )
+// inngest function to send confirmation email
+const sendBookingConfirmationEmail = inngest.createFunction(
+  { id: 'send-booking-confirmation-email' },
+  { event: 'app/show.booked' },
+  async ({ event, step }) => {
+    const { bookingId } = event.data
+
+    const booking = await Booking.findById(bookingId)
+      .populate({
+        path: 'show',
+        populate: {
+          path: 'movie',
+          model: 'movie',
+        },
+      })
+      .populate('user')
+    const showDateTime = new Date(booking.show.showDateTime)
+
+    const formattedDate = showDateTime.toLocaleDateString('en-US', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+    const formattedTime = showDateTime.toLocaleTimeString('en-US', {
+      timeZone: 'Asia/Kolkata',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+    const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+      <h2 style="margin-bottom: 6px;">${booking.user.name},</h2>
+
+      <p>Your booking for <strong style="color:#F84565">${booking.show.movie.title}</strong> is confirmed.</p>
+
+      <p>
+        <strong>Date:</strong> ${formattedDate}<br/>
+        <strong>Time:</strong> ${formattedTime}
+      </p>
+
+      <p>Enjoy the show! 🍿</p>
+
+      <p style="margin-top: 18px; font-size: 13px; color:#666;">
+        Thanks for booking with us!<br/>
+        — Ticketly  Team
+      </p>
+    </div>
+  `
+    await sendEmail({
+      to: booking.user.email,
+      subject: `Payment confirmation:"${booking.show.movie.title}" booked!`,
+      body: html,
+    })
+  }
+)
 export const functions = [
   syncUserCreation,
   syncUserDeletion,
   syncUserUpdation,
   releaseSeatsAndDeleteBooking,
+  sendBookingConfirmationEmail,
 ]
