@@ -80,6 +80,7 @@ const sendBookingConfirmationEmail = inngest.createFunction(
   { event: 'app/show.booked' },
   async ({ event, step }) => {
     const { bookingId } = event.data
+    console.log(bookingId)
 
     const booking = await Booking.findById(bookingId)
       .populate({
@@ -90,6 +91,8 @@ const sendBookingConfirmationEmail = inngest.createFunction(
         },
       })
       .populate('user')
+    console.log(booking)
+
     const showDateTime = new Date(booking.show.showDateTime)
 
     const formattedDate = showDateTime.toLocaleDateString('en-US', {

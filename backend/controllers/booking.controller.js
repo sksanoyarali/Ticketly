@@ -1,5 +1,5 @@
 // function to check availability of selected seats for a show
-
+import User from '../models/user.model.js'
 import { inngest } from '../inngest/index.js'
 import Booking from '../models/booking.model.js'
 import Show from '../models/show.model.js'
@@ -55,6 +55,8 @@ const createBooking = async (req, res) => {
     selectedSeats.map((seat) => {
       showData.occupiedSeats[seat] = userId
     })
+    const userDetail = await User.findById(booking.user)
+    console.log(userDetail.email)
 
     showData.markModified('occupiedSeats')
     await showData.save()
