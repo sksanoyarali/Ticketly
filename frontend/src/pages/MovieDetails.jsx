@@ -28,6 +28,7 @@ const MovieDetails = () => {
       const { data } = await axios.get(`api/show/${id}`)
       if (data.success) {
         setShow(data)
+        console.log(data)
       } else {
         toast.error(data.message)
       }

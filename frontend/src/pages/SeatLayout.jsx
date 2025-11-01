@@ -104,8 +104,7 @@ const SeatLayout = () => {
         }
       )
       if (data.success) {
-        toast.success(data.message)
-        navigate('/my-bookings')
+        window.location.href = data.url
       } else {
         toast.error(data.message)
       }
@@ -160,7 +159,7 @@ const SeatLayout = () => {
           </div>
         </div>
         <button
-          onClick={() => bookTickets}
+          onClick={bookTickets}
           className="flex items-center gap-1 mt-20 px-10
         py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95"
         >
