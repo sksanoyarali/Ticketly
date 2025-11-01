@@ -2,8 +2,8 @@ import mongoose from 'mongoose'
 
 const bookingSchema = new mongoose.Schema(
   {
-    user: { type: String, required: true, ref: 'User' },
-    show: { type: String, required: true, ref: 'Show' },
+    user: { type: String, required: true, ref: 'user' },
+    show: { type: String, required: true, ref: 'show' },
     amount: { type: Number, required: true },
     bookedSeats: { type: Array, required: true },
     isPaid: { type: Boolean, default: false },
@@ -12,5 +12,5 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-const Booking = mongoose.model('Booking', bookingSchema)
+const Booking = mongoose.model('booking', bookingSchema)
 export default Booking
