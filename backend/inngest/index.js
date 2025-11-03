@@ -134,11 +134,127 @@ const sendBookingConfirmationEmail = inngest.createFunction(
     })
   }
 )
+// inngest function to send remailder email
+const sendShowReminders = inngest.createFunction(
+  { id: 'send-show-remainder' },
+  { cron: '0 */8 * * *' }, //every 8 hours
+  async ({ step }) => {
+    const now = new Date()
+    const in8Hours = new Date(now.getTime() + 8 * 60 * 60 * 1000)
+
+    const windowStart = new Date(in8Hours.getTime() - 10 * 60 * 1000)
+    const remailderTasks = await step.run(
+      'prepare-remainder-tasks',
+      async () => {
+        const shows = await Show.find({
+          showDateTime: { $gte: windowStart, $lte: in8Hours },
+        }).populate('movie')
+
+        const tasks = []
+        for (const show of shows) {
+          if (!show.movie || !show.occupiedSeats) {
+            continue
+          }
+          const userIds = [...new Set(Object.values(show.occupiedSeats))]
+          if (userIds.length === 0) {
+            continue
+          }
+          const users = await User.find({ _id: { $in: userIds } }).select(
+            'name email'
+          )
+          for (const user of users) {
+            tasks.push({
+              userEmail: user.email,
+              userName: user.name,
+              movieTitle: show.movie.title,
+              showTime: show.showDateTime,
+            })
+          }
+        }
+        return tasks
+      }
+    )
+    if (remailderTasks === 0) {
+      return { sent: 0, message: 'No remailders to send' }
+    }
+    // send remailder email
+    const html = `<div style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>Hello ${task.userName},</h2>
+  <p>This is a quick reminder that your movie:</p>
+  <h3 style="color:#F84565;">${task.movieTitle}</h3>
+  <p>
+    is scheduled for <strong>${new Date(task.showTime).toLocaleDateString(
+      'en-US',
+      { timeZone: 'Asia/Kolkata' }
+    )}</strong>
+    at <strong>${new Date(task.showTime).toLocaleTimeString('en-US', {
+      timeZone: 'Asia/Kolkata',
+    })}</strong>.
+  </p>
+  <p>It starts in approximately <strong>8 hours</strong> — make sure you're ready!</p>
+  <br/>
+  <p>Enjoy the show!<br/>QuickShow Team</p>
+</div>`
+    const results = await step.run('send-all-remailders', async () => {
+      return await Promise.allSettled(
+        remailderTasks.map((task) =>
+          sendEmail({
+            to: task.userEmail,
+            subject: `Remainder :Your movie "${task.movieTitle}" starts soon`,
+            body: html,
+          })
+        )
+      )
+    })
+    const sent = results.filter((r) => r.status === 'fulfilled').length
+    const failed = results.length - sent
+    return {
+      sent,
+      failed,
+      message: `Sent ${sent} remailders,${failed} failed`,
+    }
+  }
+)
+const sendNewShowNotification = inngest.createFunction(
+  { id: 'send-new-show-notification' },
+  { event: 'app/show.added' },
+  async ({ event }) => {
+    const { movieTitle } = event.data
+
+    const users = await User.find({})
+
+    for (const user of users) {
+      const userEmail = user.email
+      const userName = user.name
+
+      const subject = `🎞️ New Show Added :${movieTitle}`
+
+      const body = `<div style="font-family: Arial, Helvetica, sans-serif; padding: 20px">
+                  <h2>Hi ${userName}</h2>
+                  <p>We Have just added a new show to our library</p>
+                  <h3 style="color: #f84565">"${movieTitle}"</h3>
+                  <p>Visit our website! to see more</p>
+                  <br />
+                  <p>
+                    Thanks <br />
+                    QuickShow Team
+                  </p>
+                </div>`
+      await sendEmail({
+        to: userEmail,
+        subject: subject,
+        body: body,
+      })
+    }
+    return { message: 'Notification sent' }
+  }
+)
 export const functions = [
   syncUserCreation,
   syncUserDeletion,
   syncUserUpdation,
   releaseSeatsAndDeleteBooking,
   sendBookingConfirmationEmail,
+  sendShowReminders,
+  sendNewShowNotification,
 ]
-// 69051030b0d9bd323fbb621a
