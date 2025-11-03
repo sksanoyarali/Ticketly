@@ -108,13 +108,25 @@ const sendBookingConfirmationEmail = inngest.createFunction(
       hour12: true,
     })
     const html = `
-    <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-      <p style="margin-top: 18px; font-size: 13px; color:#666;">
-        Thanks for booking with us!<br/>
-        — Ticketly  Team
-      </p>
-    </div>
-  `
+  <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+       <h2 style='margin-bottom: 6px;">${booking.user.name},</h2>
+
+    <p>Your booking for <strong style="color:#F84565;">${booking.show.movie.title}</strong> is confirmed.</p>
+
+    <p>
+      <strong>Date:</strong> ${formattedDate}<br/>
+      <strong>Time:</strong> ${formattedTime}
+    </p>
+
+    <p>Enjoy the show! 🍿</p>
+
+    <p style="margin-top: 18px; font-size: 13px; color: #666;">
+      Thanks for booking with us!<br/>
+      — Ticketly Team
+    </p>
+  </div>
+`
+
     await sendEmail({
       to: booking.user.email,
       subject: `Payment confirmation:"${booking.show.movie.title}" booked!`,
@@ -130,13 +142,3 @@ export const functions = [
   sendBookingConfirmationEmail,
 ]
 // 69051030b0d9bd323fbb621a
-//<h2 style="margin-bottom: 6px;">${booking.user.name},</h2>
-
-// <p>Your booking for <strong style="color:#F84565">${booking.show.movie.title}</strong> is confirmed.</p>
-
-// <p>
-// <strong>Date:</strong> ${formattedDate}<br/>
-// <strong>Time:</strong> ${formattedTime}
-// </p>
-
-// <p>Enjoy the show! 🍿</p>
